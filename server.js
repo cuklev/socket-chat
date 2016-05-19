@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
 
 	fs.readFile(file, (err, data) => {
 		if(err) {
-			console.log(err);
+			return;
 		}
 
 		res.write(data);
