@@ -14,7 +14,7 @@ socket.on('disconnect', function() {
 socket.on('online', function(users) {
 	var html = '';
 	users.forEach(function(x) {
-		html += '<li>' + x.name + '</li>';
+		html += '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
 	});
 
 	document.querySelector('#online').innerHTML = html;
@@ -30,6 +30,7 @@ socket.on('history', function(data) {
 		html += msg + '<br>';
 	});
 	document.querySelector('#chat').innerHTML = html;
+	document.querySelector('#chatHeader').innerHTML = 'Chatting with ' + data.name;
 });
 
 socket.on('msg', function(data) {

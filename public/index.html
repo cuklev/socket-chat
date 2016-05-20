@@ -5,14 +5,30 @@
 		<script src="socket.io/socket.io.js"></script>
 		<script src="js/socket.js"></script>
 		<style>
+			#online li {
+				cursor: pointer;
+			}
 			#chat {
 				border: solid 1px;
+			}
+			.column {
+				float: left;
+			}
+			#online-column {
+				width: 20%;
 			}
 		</style>
 	</head>
 
 	<body>
-		<ul id="online"></ul>
-		<div id="chat"></div>
+		<div id="online-column" class="column">
+			<h1>Online users</h1>
+			<ul id="online"></ul>
+		</div>
+		<div class="column">
+			<h2 id="chatHeader">Select user from the left column</h2>
+			<div id="chat"></div>
+			<input id="chatMessage">
+		</div>
 	</body>
 </html>

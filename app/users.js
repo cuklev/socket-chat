@@ -50,6 +50,7 @@ function connect(socket) {
 		if(!users[index].hasOwnProperty(to)) {
 			socket.emit('history', {
 				to: to,
+				name: users[to].name,
 				history: [] // No history
 			});
 			return;
@@ -57,6 +58,7 @@ function connect(socket) {
 
 		socket.emit('history', {
 			to: to,
+			name: users[to].name,
 			history: users[index][to]
 		});
 	});
@@ -70,7 +72,7 @@ function connect(socket) {
 		}
 
 		let msg = '<strong>' + users[index].name + ':</strong> '
-			+ data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escap?
+			+ data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
 		users[index][data.to].push(msg);
 
 		socket.emit('msg', {
