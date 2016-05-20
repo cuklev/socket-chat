@@ -25,7 +25,7 @@
 			$chatMessage.value = '';
 		});
 
-		socket.on('status', function(users) {
+		socket.on('users', function(users) {
 			var onhtml = '', offhtml = '';
 
 			users.forEach(function(x) {

@@ -59,12 +59,12 @@ function connect(socket) {
 		name = escapeHtml(name);
 		users[index].name = name;
 		socket.emit('name', name);
-		emit('status', userStatus());
+		emit('users', userStatus());
 	});
 
 	socket.on('disconnect', () => {
 		users[index].socket = null;
-		emit('status', userStatus());
+		emit('users', userStatus());
 	});
 
 	socket.on('history', (to) => {
