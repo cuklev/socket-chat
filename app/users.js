@@ -28,6 +28,11 @@ function online() {
 	return data;
 }
 
+function escapeHtml(str) {
+	return str.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;'); // What else do I have to escape?
+}
+
 function connect(socket) {
 	let index = users.length;
 	users.push({
@@ -37,7 +42,7 @@ function connect(socket) {
 	});
 
 	socket.on('name', (name) => {
-		name = name.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
+		name = escapeHtml(name);
 		users[index].name = name;
 		socket.emit('name', name);
 		emit('online', online());
@@ -73,8 +78,7 @@ function connect(socket) {
 			users[data.to][index] = users[index][data.to];
 		}
 
-		let msg = '<strong>' + users[index].name + ':</strong> '
-			+ data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
+		let msg = '<strong>' + users[index].name + ':</strong> ' + escapeHtml(data.msg);
 		users[index][data.to].push(msg);
 
 		socket.emit('msg', {
