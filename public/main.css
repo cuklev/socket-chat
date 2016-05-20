@@ -1,12 +1,18 @@
 #online li {
 	cursor: pointer;
 }
+#offline li {
+	cursor: pointer;
+}
+
 #chat {
 	border: solid 1px;
+	height: 80vh;
 }
+
 .column {
 	float: left;
 }
 #online-column {
-	width: 20%;
+	width: 25%;
 }
