@@ -53,8 +53,11 @@
 			data.history.forEach(function(msg) {
 				html += msg + '<br>';
 			});
+
 			$chat.innerHTML = html;
 			$chatHeader.innerHTML = 'Chatting with ' + data.name;
+
+			$chat.scrollTop = $chat.scrollHeight;
 		});
 
 		socket.on('msg', function(data) {
@@ -63,6 +66,8 @@
 			}
 
 			$chat.innerHTML += data.msg + '<br>';
+
+			$chat.scrollTop = $chat.scrollHeight;
 		});
 	});
 }());
