@@ -40,3 +40,23 @@ socket.on('msg', function(data) {
 
 	document.querySelector('#chat').innerHTML += data.msg + '<br>';
 });
+
+window.onload = function() {
+	var input = document.querySelector('#chatMessage');
+
+	input.addEventListener('keyup', function(e) {
+		if(e.which !== 13) {
+			return;
+		}
+		if(currentChat === undefined) {
+			return;
+		}
+
+		socket.emit('msg', {
+			to: currentChat,
+			msg: input.value
+		});
+
+		input.value = '';
+	});
+}
