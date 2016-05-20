@@ -16,6 +16,9 @@
 			if(currentChat === undefined) {
 				return;
 			}
+			if($chatMessage.value === '') {
+				return;
+			}
 
 			socket.emit('msg', {
 				to: currentChat,

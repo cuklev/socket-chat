@@ -85,6 +85,10 @@ function connect(socket) {
 	});
 
 	socket.on('msg', (data) => {
+		if(data.msg === '') {
+			return;
+		}
+
 		if(!users[index].hasOwnProperty(data.to)) {
 			users[index][data.to] = [];
 
