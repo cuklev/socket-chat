@@ -60,11 +60,15 @@ function connect(socket) {
 			users[index.to][index] = users[index][data.to];
 		}
 
-		var msg = data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
+		let msg = data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
 		users[index][data.to].push('<strong>' + users[index].name + ':</strong> ' + msg + '<br>'); 
 
 		socket.emit('msg', {
 			to: data.to,
+			msg: msg
+		});
+		users[data.to].socket.emit('msg', {
+			to: index,
 			msg: msg
 		});
 	});
