@@ -1,9 +1,10 @@
 (function() {
 	var currentChat,
-		$online, $chat, $chatHeader, $chatMessage;
+		$online, $offline, $chat, $chatHeader, $chatMessage;
 
 	window.addEventListener('load', function() {
 		$online = document.querySelector('#online');
+		$offline = document.querySelector('#offline');
 		$chat = document.querySelector('#chat');
 		$chatHeader = document.querySelector('#chatHeader');
 		$chatMessage = document.querySelector('#chatMessage');
@@ -24,13 +25,22 @@
 			$chatMessage.value = '';
 		});
 
-		socket.on('online', function(users) {
-			var html = '';
+		socket.on('status', function(users) {
+			var onhtml = '', offhtml = '';
+
 			users.forEach(function(x) {
-				html += '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
+				var html = '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
+
+				if(x.online) {
+					onhtml += html;
+				}
+				else {
+					offhtml += html;
+				}
 			});
 
-			$online.innerHTML = html;
+			$online.innerHTML = onhtml;
+			$offline.innerHTML = offhtml;
 		});
 
 		socket.on('history', function(data) {

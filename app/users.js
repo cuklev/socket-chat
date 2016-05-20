@@ -1,10 +1,11 @@
 'use strict';
 
 let users = [];
+let user_ids = {};
 
 function emit(msg, data) {
 	users.forEach((x) => {
-		if(x === undefined) {
+		if(x.socket === null) {
 			return;
 		}
 
@@ -12,16 +13,14 @@ function emit(msg, data) {
 	});
 };
 
-function online() {
+function userStatus() {
 	let data = [];
-	users.forEach((x, i) => {
-		if(x === undefined) {
-			return;
-		}
 
+	users.forEach((x, i) => {
 		data.push({
 			name: x.name,
-			index: i
+			index: i,
+			online: x.socket !== null
 		});
 	});
 
@@ -34,23 +33,38 @@ function escapeHtml(str) {
 }
 
 function connect(socket) {
-	let index = users.length;
-	users.push({
-		socket: socket,
-		name: 'No name',
-		chats: {}
+	let index;
+
+	socket.on('id', (id) => {
+		if(!user_ids.hasOwnProperty(id)) {
+			index = users.length;
+			user_ids[id] = index;
+
+			users.push({
+				socket: socket,
+				name: 'Unnamed',
+				chats: {}
+			});
+		}
+		else {
+			index = user_ids[id];
+			users[index].socket = socket;
+		}
+
+		socket.emit('name', users[index].name);
+		emit('users', userStatus());
 	});
 
 	socket.on('name', (name) => {
 		name = escapeHtml(name);
 		users[index].name = name;
 		socket.emit('name', name);
-		emit('online', online());
+		emit('status', userStatus());
 	});
 
 	socket.on('disconnect', () => {
-		users[index] = undefined;
-		emit('online', online());
+		users[index].socket = null;
+		emit('status', userStatus());
 	});
 
 	socket.on('history', (to) => {
