@@ -99,10 +99,13 @@ function connect(socket) {
 			to: data.to,
 			msg: msg
 		});
-		users[data.to].socket.emit('msg', {
-			to: index,
-			msg: msg
-		});
+		
+		if(users[data.to].socket !== null) {
+			users[data.to].socket.emit('msg', {
+				to: index,
+				msg: msg
+			});
+		}
 	});
 }
 
