@@ -58,6 +58,9 @@
 			$chatHeader.innerHTML = 'Chatting with ' + data.name;
 
 			$chat.scrollTop = $chat.scrollHeight;
+
+			$chatMessage.value = '';
+			$chatMessage.focus();
 		});
 
 		socket.on('msg', function(data) {
