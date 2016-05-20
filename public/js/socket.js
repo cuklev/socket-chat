@@ -5,3 +5,8 @@ var socket = (function() {
 		+ '/socket.io';
 	return io({path: path});
 }());
+
+socket.on('disconnect', function() {
+	alert('Server went offline');
+	location.reload();
+});
