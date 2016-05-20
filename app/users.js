@@ -14,13 +14,14 @@ function emit(msg, data) {
 
 function online() {
 	let data = [];
-	users.forEach((x) => {
+	users.forEach((x, i) => {
 		if(x === undefined) {
 			return;
 		}
 
 		data.push({
-			name: x.name
+			name: x.name,
+			index: i
 		});
 	});
 
@@ -47,11 +48,17 @@ function connect(socket) {
 
 	socket.on('history', (to) => {
 		if(!users[index].hasOwnProperty(to)) {
-			socket.emit('history', []); // No history
+			socket.emit('history', {
+				to: to,
+				history: [] // No history
+			});
 			return;
 		}
 
-		socket.emit('history', users[index][to]);
+		socket.emit('history', {
+			to: to,
+			history: users[index][to]
+		});
 	});
 
 	socket.on('msg', (data) => {
@@ -62,8 +69,9 @@ function connect(socket) {
 			users[data.to][index] = users[index][data.to];
 		}
 
-		let msg = data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
-		users[index][data.to].push('<strong>' + users[index].name + ':</strong> ' + msg); 
+		let msg = '<strong>' + users[index].name + ':</strong> '
+			+ data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escap?
+		users[index][data.to].push(msg);
 
 		socket.emit('msg', {
 			to: data.to,

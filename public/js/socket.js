@@ -20,10 +20,22 @@ socket.on('online', function(users) {
 	document.querySelector('#online').innerHTML = html;
 });
 
-socket.on('history', function(x) {
-	console.log(x);
+var currentChat;
+
+socket.on('history', function(data) {
+	var html = '';
+	currentChat = data.to;
+
+	data.history.forEach(function(msg) {
+		html += msg + '<br>';
+	});
+	document.querySelector('#chat').innerHTML = html;
 });
 
-socket.on('msg', function(x) {
-	console.log(x);
+socket.on('msg', function(data) {
+	if(currentChat !== data.to) {
+		return;
+	}
+
+	document.querySelector('#chat').innerHTML += data.msg + '<br>';
 });
