@@ -37,6 +37,37 @@ function connect(socket) {
 		users[index].name = name;
 		emit(online());
 	});
+
+	socket.on('disconnect', () => {
+		users[index] = undefined;
+		emit(online());
+	});
+
+	socket.on('history', (to) => {
+		if(!users[index].hasOwnProperty(to)) {
+			socket.emit('history', []); // No history
+			return;
+		}
+
+		socket.emit('history', users[index][to]);
+	});
+
+	socket.on('msg', (data) => {
+		if(!users[index].hasOwnProperty(data.to)) {
+			users[index][data.to] = [];
+
+			// [from][to] and [to][from] should be the same chats
+			users[index.to][index] = users[index][data.to];
+		}
+
+		var msg = data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
+		users[index][data.to].push('<strong>' + users[index].name + ':</strong> ' + msg + '<br>'); 
+
+		socket.emit('msg', {
+			to: data.to,
+			msg: msg
+		});
+	});
 }
 
 module.exports = {
