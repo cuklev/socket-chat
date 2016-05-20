@@ -19,7 +19,9 @@ function online() {
 			return;
 		}
 
-		data.push(x.name);
+		data.push({
+			name: x.name
+		});
 	});
 
 	return data;
@@ -35,12 +37,12 @@ function connect(socket) {
 
 	socket.on('name', (name) => {
 		users[index].name = name;
-		emit(online());
+		emit('online', online());
 	});
 
 	socket.on('disconnect', () => {
 		users[index] = undefined;
-		emit(online());
+		emit('online', online());
 	});
 
 	socket.on('history', (to) => {
@@ -57,11 +59,11 @@ function connect(socket) {
 			users[index][data.to] = [];
 
 			// [from][to] and [to][from] should be the same chats
-			users[index.to][index] = users[index][data.to];
+			users[data.to][index] = users[index][data.to];
 		}
 
 		let msg = data.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
-		users[index][data.to].push('<strong>' + users[index].name + ':</strong> ' + msg + '<br>'); 
+		users[index][data.to].push('<strong>' + users[index].name + ':</strong> ' + msg); 
 
 		socket.emit('msg', {
 			to: data.to,
