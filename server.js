@@ -24,6 +24,6 @@ const server = http.createServer((req, res) => {
 }).listen(port, '127.0.0.1');
 
 const io = require('socket.io')(server);
+const users = require('./app/users.js');
 
-io.sockets.on('connection', (socket) => {
-});
+io.sockets.on('connection', users.connect);
