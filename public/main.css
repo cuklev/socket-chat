@@ -7,9 +7,15 @@
 
 #chat {
 	border: solid 1px;
-	min-width: 60vw;
-	height: 60vh;
-	padding: 5%;
+	width: 100%;
+	height: 80vh;
+	padding-left: 1%;
+	overflow: auto;
+	word-wrap: break-word;
+}
+#chatMessage {
+	width: 100%;
+	resize: none;
 }
 
 .column {
@@ -17,4 +23,7 @@
 }
 #online-column {
 	width: 25%;
+}
+#chat-column {
+	width: 65%;
 }
