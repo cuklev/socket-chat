@@ -28,7 +28,6 @@
 
 		socket.on('name', function(data) {
 			name = data;
-			$reName.value = name;
 			$titleName.innerHTML = name;
 		});
 	});
