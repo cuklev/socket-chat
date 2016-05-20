@@ -2,7 +2,7 @@
 	var currentChat,
 		$online, $chat, $chatHeader, $chatMessage;
 
-	window.onload = function() {
+	window.addEventListener('load', function() {
 		$online = document.querySelector('#online');
 		$chat = document.querySelector('#chat');
 		$chatHeader = document.querySelector('#chatHeader');
@@ -23,33 +23,33 @@
 
 			$chatMessage.value = '';
 		});
-	}
 
-	socket.on('online', function(users) {
-		var html = '';
-		users.forEach(function(x) {
-			html += '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
+		socket.on('online', function(users) {
+			var html = '';
+			users.forEach(function(x) {
+				html += '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
+			});
+
+			$online.innerHTML = html;
 		});
 
-		$online.innerHTML = html;
-	});
+		socket.on('history', function(data) {
+			var html = '';
+			currentChat = data.to;
 
-	socket.on('history', function(data) {
-		var html = '';
-		currentChat = data.to;
-
-		data.history.forEach(function(msg) {
-			html += msg + '<br>';
+			data.history.forEach(function(msg) {
+				html += msg + '<br>';
+			});
+			$chat.innerHTML = html;
+			$chatHeader.innerHTML = 'Chatting with ' + data.name;
 		});
-		$chat.innerHTML = html;
-		$chatHeader.innerHTML = 'Chatting with ' + data.name;
-	});
 
-	socket.on('msg', function(data) {
-		if(currentChat !== data.to) {
-			return;
-		}
+		socket.on('msg', function(data) {
+			if(currentChat !== data.to) {
+				return;
+			}
 
-		$chat.innerHTML += data.msg + '<br>';
+			$chat.innerHTML += data.msg + '<br>';
+		});
 	});
 }());

@@ -5,12 +5,15 @@
 		<script src="socket.io/socket.io.js"></script>
 		<script src="js/socket.js"></script>
 		<script src="js/chat.js"></script>
+		<script src="js/user.js"></script>
 		<link rel="stylesheet" href="main.css">
 	</head>
 
 	<body>
 		<div id="online-column" class="column">
-			<h1>Online users</h1>
+			<h1>Hello, <span id="titleName"></span>!</h1>
+			Rename: <input id="reName">
+			<h2>Online users</h2>
 			<ul id="online"></ul>
 		</div>
 		<div class="column">

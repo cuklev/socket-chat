@@ -37,7 +37,9 @@ function connect(socket) {
 	});
 
 	socket.on('name', (name) => {
+		name = name.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // What else do I have to escape?
 		users[index].name = name;
+		socket.emit('name', name);
 		emit('online', online());
 	});
 
