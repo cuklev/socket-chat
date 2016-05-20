@@ -5,13 +5,16 @@
 	var id = (function() {
 		var id_len = 100,
 			id = localStorage.getItem('chat_id');
+
 		if(id === null) {
 			id = '';
-			while(id.length < id_len) {
-				id += (Math.random() + '').substr(2);
-			}
-			id = id.substr(0, id_len);
 		}
+
+		while(id.length < id_len) {
+			id += (Math.random() + '').substr(2);
+		}
+		id = id.substr(0, id_len);
+
 		localStorage.setItem('chat_id', id);
 		return id;
 	}());
