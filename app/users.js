@@ -56,6 +56,10 @@ function connect(socket) {
 	});
 
 	socket.on('name', (name) => {
+		if(index === undefined) {
+			return;
+		}
+
 		name = escapeHtml(name);
 		users[index].name = name;
 		socket.emit('name', name);
@@ -63,11 +67,19 @@ function connect(socket) {
 	});
 
 	socket.on('disconnect', () => {
+		if(index === undefined) {
+			return;
+		}
+
 		users[index].socket = null;
 		emit('users', userStatus());
 	});
 
 	socket.on('history', (to) => {
+		if(index === undefined) {
+			return;
+		}
+
 		if(!users[index].hasOwnProperty(to)) {
 			socket.emit('history', {
 				to: to,
@@ -85,6 +97,10 @@ function connect(socket) {
 	});
 
 	socket.on('msg', (data) => {
+		if(index === undefined) {
+			return;
+		}
+
 		if(data.msg === '') {
 			return;
 		}
