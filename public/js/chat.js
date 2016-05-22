@@ -48,12 +48,17 @@
 			$offline.innerHTML = offhtml;
 		});
 
+		function renderMessage(msg) {
+			var timestamp = new Date(msg.timestamp);
+			return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
+		}
+
 		socket.on('history', function(data) {
 			var html = '';
 			currentChat = data.to;
 
 			data.history.forEach(function(msg) {
-				html += msg + '<br>';
+				html += renderMessage(msg) + '<br>';
 			});
 
 			$chat.innerHTML = html;
@@ -70,7 +75,7 @@
 				return;
 			}
 
-			$chat.innerHTML += data.msg + '<br>';
+			$chat.innerHTML += renderMessage(data.msg) + '<br>';
 
 			$chat.scrollTop = $chat.scrollHeight;
 		});

@@ -118,7 +118,11 @@ function connect(socket) {
 			users[data.to].chats[index] = users[index].chats[data.to];
 		}
 
-		let msg = '<strong>' + users[index].name + ':</strong> ' + escapeHtml(data.msg);
+		let msg = {
+			sender: users[index].name, // Don't store by name
+			msg: escapeHtml(data.msg),
+			timestamp: new Date()
+		};
 		users[index].chats[data.to].push(msg);
 
 		socket.emit('msg', {
