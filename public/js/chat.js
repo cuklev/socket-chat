@@ -32,7 +32,9 @@
 			var onhtml = '', offhtml = '';
 
 			users.forEach(function(x) {
-				var html = '<li onclick="socket.emit(\'history\', ' + x.index + ')">' + x.name + '</li>';
+				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent,
+					onclick = 'socket.emit(\'history\', ' + x.index + ')';
+					html = '<li title="' + title + '" onclick="' + onclick + '">' + x.name + '</li>';
 
 				if(x.online) {
 					onhtml += html;

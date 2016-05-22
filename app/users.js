@@ -20,7 +20,9 @@ function userStatus() {
 		data.push({
 			name: x.name,
 			index: i,
-			online: x.socket !== null
+			online: x.socket !== null,
+			ip: x.ip,
+			userAgent: x.userAgent
 		});
 	});
 
@@ -50,6 +52,10 @@ function connect(socket) {
 			index = user_ids[id];
 			users[index].socket = socket;
 		}
+
+		// Check to see if this works behind multiple proxies
+		users[index].ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+		users[index].userAgent = socket.request.headers['user-agent'];
 
 		socket.emit('name', users[index].name);
 		emit('users', userStatus());
