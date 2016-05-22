@@ -1,6 +1,18 @@
 (function() {
 	var currentChat,
-		$online, $offline, $chat, $chatHeader, $chatMessage;
+		$online, $offline, $chat, $chatHeader, $chatMessage,
+		renderMessage;
+
+	renderMessage = (function() {
+		// regex WILL need updating
+		var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+
+		return function(msg) {
+			var timestamp = new Date(msg.timestamp);
+			msg.msg = msg.msg.replace(urlMatch, '<a href="$1" target="_blank">$1</a>');
+			return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
+		};
+	}());
 
 	window.addEventListener('load', function() {
 		$online = document.querySelector('#online');
@@ -32,9 +44,8 @@
 			var onhtml = '', offhtml = '';
 
 			users.forEach(function(x) {
-				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent,
-					onclick = 'socket.emit(\'history\', ' + x.index + ')';
-					html = '<li title="' + title + '" onclick="' + onclick + '">' + x.name + '</li>';
+				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent;
+					html = '<li title="' + title + '"><a href="#' + x.index + '">' + x.name + '</a></li>';
 
 				if(x.online) {
 					onhtml += html;
@@ -47,17 +58,6 @@
 			$online.innerHTML = onhtml;
 			$offline.innerHTML = offhtml;
 		});
-
-		var renderMessage = (function() {
-			// regex WILL need updating
-			var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
-
-			return function(msg) {
-				var timestamp = new Date(msg.timestamp);
-				msg.msg = msg.msg.replace(urlMatch, '<a href="$1" target="_blank">$1</a>');
-				return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
-			};
-		}());
 
 		socket.on('history', function(data) {
 			var html = '';

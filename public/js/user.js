@@ -1,8 +1,9 @@
 (function() {
 	var name,
-		$reName, $titleName;
+		$reName, $titleName,
+		id;
 
-	var id = (function() {
+	id = (function() {
 		var id_len = 100,
 			id = localStorage.getItem('chat_id');
 
@@ -19,11 +20,24 @@
 		return id;
 	}());
 
+	function loadHistory() {
+		if(location.hash === '') {
+			return;
+		}
+
+		var index = +location.hash.substr(1);
+		console.log('loading ' + index);
+		socket.emit('history', index);
+	}
+
 	window.addEventListener('load', function() {
 		$reName = document.querySelector('#reName');
 		$titleName = document.querySelector('#titleName');
 
 		socket.emit('id', id);
+
+		loadHistory(); // should happen after emitting id
+		window.addEventListener('hashchange', loadHistory);
 
 		$reName.addEventListener('keyup', function(e) {
 			socket.emit('name', $reName.value);
