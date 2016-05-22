@@ -48,10 +48,16 @@
 			$offline.innerHTML = offhtml;
 		});
 
-		function renderMessage(msg) {
-			var timestamp = new Date(msg.timestamp);
-			return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
-		}
+		var renderMessage = (function() {
+			// regex WILL need updating
+			var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+
+			return function(msg) {
+				var timestamp = new Date(msg.timestamp);
+				msg.msg = msg.msg.replace(urlMatch, '<a href="$1" target="_blank">$1</a>');
+				return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
+			};
+		}());
 
 		socket.on('history', function(data) {
 			var html = '';
