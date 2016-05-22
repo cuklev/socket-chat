@@ -86,6 +86,10 @@ function connect(socket) {
 			return;
 		}
 
+		if(!users.hasOwnProperty(to)) {
+			return;
+		}
+
 		if(!users[index].chats.hasOwnProperty(to)) {
 			socket.emit('history', {
 				to: to,
@@ -104,6 +108,10 @@ function connect(socket) {
 
 	socket.on('msg', (data) => {
 		if(index === undefined) {
+			return;
+		}
+
+		if(!users.hasOwnProperty(data.to)) {
 			return;
 		}
 
