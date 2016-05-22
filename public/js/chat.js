@@ -15,6 +15,18 @@
 		};
 	}());
 
+	function displayNotifications(to) {
+		var $el = document.querySelector('#msgs_from_' + to);
+		if(unseen[to] === 0) {
+			$el.innerHTML = '';
+			$el.style.display = 'none';
+		}
+		else {
+			$el.innerHTML = unseen[to];
+			$el.style.display = 'inline';
+		}
+	}
+
 	window.addEventListener('load', function() {
 		$online = document.querySelector('#online');
 		$offline = document.querySelector('#offline');
@@ -59,14 +71,15 @@
 
 			$online.innerHTML = onhtml;
 			$offline.innerHTML = offhtml;
+
+			for(var i in unseen) {
+				displayNotifications(i);
+			}
 		});
 
 		socket.on('missed', function(missed) {
 			for(var i in missed) {
 				unseen[i] = missed[i];
-				var $el = document.querySelector('#msgs_from_' + i);
-				$el.innerHTML = unseen[i];
-				$el.style.display = 'inline';
 			}
 		});
 
@@ -78,8 +91,7 @@
 
 				setTimeout(function() {
 					unseen[data.to] = 0;
-					$el.innerHTML = 0;
-					$el.style.display = 'none';
+					displayNotifications(data.to);
 
 					socket.emit('see', currentChat);
 				}, 1000);
@@ -102,12 +114,12 @@
 
 		socket.on('msg', function(data) {
 			if(currentChat !== data.to) {
-				var $el = document.querySelector('#msgs_from_' + data.to);
 				if(!unseen.hasOwnProperty(data.to)) {
 					unseen[data.to] = 0;
 				}
-				$el.innerHTML = unseen[data.to] += 1;
-				$el.style.display = 'inline';
+				unseen[data.to] += 1;
+
+				displayNotifications(data.to);
 
 				return;
 			}

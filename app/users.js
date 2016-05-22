@@ -59,8 +59,8 @@ function connect(socket) {
 		users[index].userAgent = socket.request.headers['user-agent'];
 
 		socket.emit('name', users[index].name);
-		emit('users', userStatus());
 		socket.emit('missed', users[index].missed);
+		emit('users', userStatus());
 	});
 
 	socket.on('name', (name) => {
