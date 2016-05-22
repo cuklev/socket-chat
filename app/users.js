@@ -86,7 +86,7 @@ function connect(socket) {
 			return;
 		}
 
-		if(!users[index].hasOwnProperty(to)) {
+		if(!users[index].chats.hasOwnProperty(to)) {
 			socket.emit('history', {
 				to: to,
 				name: users[to].name,
@@ -98,7 +98,7 @@ function connect(socket) {
 		socket.emit('history', {
 			to: to,
 			name: users[to].name,
-			history: users[index][to]
+			history: users[index].chats[to]
 		});
 	});
 
@@ -111,15 +111,15 @@ function connect(socket) {
 			return;
 		}
 
-		if(!users[index].hasOwnProperty(data.to)) {
-			users[index][data.to] = [];
+		if(!users[index].chats.hasOwnProperty(data.to)) {
+			users[index].chats[data.to] = [];
 
 			// [from][to] and [to][from] should be the same chats
-			users[data.to][index] = users[index][data.to];
+			users[data.to].chats[index] = users[index].chats[data.to];
 		}
 
 		let msg = '<strong>' + users[index].name + ':</strong> ' + escapeHtml(data.msg);
-		users[index][data.to].push(msg);
+		users[index].chats[data.to].push(msg);
 
 		socket.emit('msg', {
 			to: data.to,
