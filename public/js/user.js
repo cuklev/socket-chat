@@ -26,7 +26,6 @@
 		}
 
 		var index = +location.hash.substr(1);
-		console.log('loading ' + index);
 		socket.emit('history', index);
 	}
 
