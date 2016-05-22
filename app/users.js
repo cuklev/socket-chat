@@ -107,6 +107,7 @@ function connect(socket) {
 			return;
 		}
 
+		data.msg = data.msg.trim();
 		if(data.msg === '') {
 			return;
 		}
