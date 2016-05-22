@@ -45,7 +45,8 @@ function connect(socket) {
 			users.push({
 				socket: socket,
 				name: 'Unnamed',
-				chats: {}
+				chats: {},
+				missed: {}
 			});
 		}
 		else {
@@ -59,6 +60,7 @@ function connect(socket) {
 
 		socket.emit('name', users[index].name);
 		emit('users', userStatus());
+		socket.emit('missed', users[index].missed);
 	});
 
 	socket.on('name', (name) => {
@@ -149,6 +151,15 @@ function connect(socket) {
 				msg: msg
 			});
 		}
+
+		if(!users[data.to].missed.hasOwnProperty(index)) {
+			users[data.to].missed[index] = 0;
+		}
+		users[data.to].missed[index] += 1;
+	});
+
+	socket.on('see', (to) => {
+		users[index].missed[to] = 0;
 	});
 }
 

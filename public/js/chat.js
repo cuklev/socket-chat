@@ -1,7 +1,8 @@
 (function() {
 	var currentChat,
 		$online, $offline, $chat, $chatHeader, $chatMessage,
-		renderMessage;
+		renderMessage,
+		unseen = [];
 
 	renderMessage = (function() {
 		// regex WILL need updating
@@ -44,8 +45,9 @@
 			var onhtml = '', offhtml = '';
 
 			users.forEach(function(x) {
-				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent;
-					html = '<li title="' + title + '"><a href="#' + x.index + '">' + x.name + '</a></li>';
+				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent,
+					notification = '<span id="msgs_from_' + x.index + '" class="notification"></span>',
+					html = '<li title="' + title + '"><a href="#' + x.index + '">' + x.name + '</a>' + notification + '</li>';
 
 				if(x.online) {
 					onhtml += html;
@@ -59,8 +61,30 @@
 			$offline.innerHTML = offhtml;
 		});
 
+		socket.on('missed', function(missed) {
+			for(var i in missed) {
+				unseen[i] = missed[i];
+				var $el = document.querySelector('#msgs_from_' + i);
+				$el.innerHTML = unseen[i];
+				$el.style.display = 'inline';
+			}
+		});
+
 		socket.on('history', function(data) {
 			var html = '';
+
+			(function() {
+				var $el = document.querySelector('#msgs_from_' + data.to);
+
+				setTimeout(function() {
+					unseen[data.to] = 0;
+					$el.innerHTML = 0;
+					$el.style.display = 'none';
+
+					socket.emit('see', currentChat);
+				}, 1000);
+			}());
+
 			currentChat = data.to;
 
 			data.history.forEach(function(msg) {
@@ -78,12 +102,21 @@
 
 		socket.on('msg', function(data) {
 			if(currentChat !== data.to) {
+				var $el = document.querySelector('#msgs_from_' + data.to);
+				if(!unseen.hasOwnProperty(data.to)) {
+					unseen[data.to] = 0;
+				}
+				$el.innerHTML = unseen[data.to] += 1;
+				$el.style.display = 'inline';
+
 				return;
 			}
 
 			$chat.innerHTML += renderMessage(data.msg) + '<br>';
 
 			$chat.scrollTop = $chat.scrollHeight;
+
+			socket.emit('see', currentChat);
 		});
 	});
 }());

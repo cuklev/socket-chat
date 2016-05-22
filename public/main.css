@@ -19,3 +19,13 @@
 #chat-column {
 	width: 65%;
 }
+
+.notification {
+	margin-left: 15px;
+	padding: 3px;
+	color: white;
+	background-color: greenyellow;
+	border-radius: 40%;
+	font-family: "Monospace";
+	display: none;
+}
