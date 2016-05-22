@@ -67,6 +67,10 @@ function connect(socket) {
 		}
 
 		name = escapeHtml(name.trim());
+		if(name === '') {
+			name = '"no name"';
+		}
+
 		users[index].name = name;
 		socket.emit('name', name);
 		emit('users', userStatus());
