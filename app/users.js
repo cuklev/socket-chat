@@ -170,7 +170,9 @@ function connect(socket) {
 		}
 		users[index].seen[to] = users[index].chats[to].length;
 
-		users[to].socket.emit('see', index);
+		if(users.hasOwnProperty(to) && users[to].socket !== null) {
+			users[to].socket.emit('see', index);
+		}
 	});
 }
 
