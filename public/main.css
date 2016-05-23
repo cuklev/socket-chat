@@ -30,16 +30,10 @@
 	display: none;
 }
 
-@keyframes newMsg {
-	from { background-color: greenyellow; }
-	to { background-color: inherit; }
-}
-
 .newMessage {
-	animation-name: newMsg;
-	animation-duration: 1s;
-	animation-timing-function: ease;
-	animation-delay: 2s;
-	animation-iteration-count: 1;
-	animation-fill-mode: both;
+	background-color: greenyellow;
+}
+.highlight {
+	transition: ease 1s 1s;
+	background-color: inherit;
 }

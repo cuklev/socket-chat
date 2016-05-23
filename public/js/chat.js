@@ -2,7 +2,8 @@
 	var currentChat,
 		$online, $offline, $chat, $chatHeader, $chatMessage,
 		renderMessage,
-		unseen = [];
+		unseen = [],
+		windowfocus = false;
 
 	renderMessage = (function() {
 		// regex WILL need updating
@@ -35,6 +36,23 @@
 			$el.style.display = 'inline';
 		}
 	}
+
+	function seeChat() {
+		var i, $msgs = document.querySelectorAll('.newMessage');
+		for(i in $msgs) {
+			$msgs[i].className = 'highlight';
+		}
+
+		socket.emit('see', currentChat);
+	}
+
+	window.addEventListener('focus', function() {
+		windowfocus = true;
+		seeChat();
+	});
+	window.addEventListener('blur', function() {
+		windowfocus = false;
+	});
 
 	window.addEventListener('load', function() {
 		$online = document.querySelector('#online');
@@ -93,18 +111,10 @@
 		});
 
 		socket.on('history', function(data) {
-			(function() {
-				var $el = document.querySelector('#msgs_from_' + data.to);
-
-				setTimeout(function() {
-					unseen[data.to] = 0;
-					displayNotifications(data.to);
-
-					socket.emit('see', currentChat);
-				}, 1000);
-			}());
-
 			currentChat = data.to;
+
+			unseen[data.to] = 0;
+			displayNotifications(data.to);
 
 			$chat.innerHTML = '';
 			data.history.forEach(function(msg, i) {
@@ -117,10 +127,16 @@
 
 			$chatMessage.value = '';
 			$chatMessage.focus();
+
+			if(windowfocus) {
+				seeChat();
+			}
 		});
 
 		socket.on('msg', function(data) {
-			util.beep();
+			if(!data.seen) {
+				util.beep();
+			}
 
 			if(currentChat !== data.to) {
 				if(!unseen.hasOwnProperty(data.to)) {
@@ -137,10 +153,8 @@
 
 			$chat.scrollTop = $chat.scrollHeight;
 
-			if(!data.seen) {
-				setTimeout(function() {
-					socket.emit('see', currentChat);
-				}, 1000);
+			if(!data.seen && windowfocus) {
+				seeChat();
 			}
 		});
 	});
