@@ -30,7 +30,9 @@ function userStatus() {
 }
 
 function escapeHtml(str) {
-	return str.replace(/</g, '&lt;')
+	return str
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;'); // What else do I have to escape?
 }
 
