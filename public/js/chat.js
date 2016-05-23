@@ -8,13 +8,16 @@
 		// regex WILL need updating
 		var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
-		return function(msg, seen) {
+		return function(msg, seen, old) {
 			var $msg = document.createElement('div'),
 				timestamp = new Date(msg.timestamp);
 
 			$msg.title = timestamp;
 			if(!seen) {
 				$msg.className = 'newMessage';
+			}
+			else if(!old) {
+				$msg.className = 'pendingMessage';
 			}
 
 			msg.msg = msg.msg.replace(urlMatch, '<a href="$1" target="_blank">$1</a>');
@@ -31,6 +34,13 @@
 		}
 
 		socket.emit('see', currentChat);
+	}
+
+	function seenChat() {
+		var i, $msgs = document.querySelectorAll('.pendingMessage');
+		for(i in $msgs) {
+			$msgs[i].className = 'highlight';
+		}
 	}
 
 	window.addEventListener('focus', function() {
@@ -96,7 +106,7 @@
 
 			$chat.innerHTML = '';
 			data.history.forEach(function(msg, i) {
-				renderMessage(msg, i < data.seen);
+				renderMessage(msg, i < data.seen, i < data.old);
 			});
 
 			$chatHeader.innerHTML = 'Chatting with ' + data.name;
@@ -121,13 +131,21 @@
 				return;
 			}
 
-			renderMessage(data.msg, data.seen);
+			renderMessage(data.msg, data.seen, data.old);
 
 			$chat.scrollTop = $chat.scrollHeight;
 
 			if(!data.seen && windowfocus) {
 				seeChat();
 			}
+		});
+
+		socket.on('see', function(to) {
+			if(currentChat !== to) {
+				return;
+			}
+
+			seenChat();
 		});
 	});
 }());

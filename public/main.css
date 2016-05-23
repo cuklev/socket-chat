@@ -33,7 +33,11 @@
 .newMessage {
 	background-color: greenyellow;
 }
+.pendingMessage {
+	color: gray;
+}
 .highlight {
 	transition: ease 1s 1s;
+	color: inherit;
 	background-color: inherit;
 }

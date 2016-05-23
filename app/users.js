@@ -109,7 +109,8 @@ function connect(socket) {
 			to: to,
 			name: users[to].name,
 			history: users[index].chats[to] || [],
-			seen: users[index].seen[to] || 0
+			seen: users[index].seen[to] || 0,
+			old: users[to].seen[index] || 0
 		});
 	});
 
@@ -145,14 +146,16 @@ function connect(socket) {
 		socket.emit('msg', {
 			to: data.to,
 			msg: msg,
-			seen: true
+			seen: true,
+			old: false
 		});
 
 		if(users[data.to].socket !== null) {
 			users[data.to].socket.emit('msg', {
 				to: index,
 				msg: msg,
-				seen: false
+				seen: false,
+				old: true
 			});
 		}
 	});
@@ -166,6 +169,8 @@ function connect(socket) {
 			return;
 		}
 		users[index].seen[to] = users[index].chats[to].length;
+
+		users[to].socket.emit('see', index);
 	});
 }
 
