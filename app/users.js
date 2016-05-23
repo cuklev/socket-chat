@@ -99,24 +99,11 @@ function connect(socket) {
 			return;
 		}
 
-		if(!users.hasOwnProperty(to)) {
-			return;
-		}
-
-		if(!users[index].chats.hasOwnProperty(to)) {
-			socket.emit('history', {
-				to: to,
-				name: users[to].name,
-				history: [] // No history
-			});
-			return;
-		}
-
 		socket.emit('history', {
 			to: to,
 			name: users[to].name,
-			history: users[index].chats[to],
-			seen: users[index].seen[to]
+			history: users[index].chats[to] || [],
+			seen: users[index].seen[to] || 0
 		});
 	});
 
