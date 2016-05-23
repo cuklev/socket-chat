@@ -46,7 +46,7 @@ function connect(socket) {
 				socket: socket,
 				name: 'Unnamed',
 				chats: {},
-				missed: {}
+				seen: {}
 			});
 		}
 		else {
@@ -59,7 +59,14 @@ function connect(socket) {
 		users[index].userAgent = socket.request.headers['user-agent'];
 
 		socket.emit('name', users[index].name);
-		socket.emit('missed', users[index].missed);
+		(function() {
+			let missed = {};
+			for(let i in users[index].chats) {
+				missed[i] = users[index].chats[i].length - (users[index].seen[i] || 0);
+			}
+
+			socket.emit('missed', missed);
+		}());
 		emit('users', userStatus());
 	});
 
@@ -108,7 +115,8 @@ function connect(socket) {
 		socket.emit('history', {
 			to: to,
 			name: users[to].name,
-			history: users[index].chats[to]
+			history: users[index].chats[to],
+			seen: users[index].seen[to]
 		});
 	});
 
@@ -139,27 +147,32 @@ function connect(socket) {
 			timestamp: new Date()
 		};
 		users[index].chats[data.to].push(msg);
+		users[index].seen[data.to] = users[index].chats[data.to].length;
 
 		socket.emit('msg', {
 			to: data.to,
-			msg: msg
+			msg: msg,
+			seen: true
 		});
-		
+
 		if(users[data.to].socket !== null) {
 			users[data.to].socket.emit('msg', {
 				to: index,
-				msg: msg
+				msg: msg,
+				seen: false
 			});
 		}
-
-		if(!users[data.to].missed.hasOwnProperty(index)) {
-			users[data.to].missed[index] = 0;
-		}
-		users[data.to].missed[index] += 1;
 	});
 
 	socket.on('see', (to) => {
-		users[index].missed[to] = 0;
+		if(index === undefined) {
+			return;
+		}
+
+		if(!users[index].chats.hasOwnProperty(to)) {
+			return;
+		}
+		users[index].seen[to] = users[index].chats[to].length;
 	});
 }
 

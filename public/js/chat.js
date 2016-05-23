@@ -8,10 +8,19 @@
 		// regex WILL need updating
 		var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
-		return function(msg) {
-			var timestamp = new Date(msg.timestamp);
+		return function(msg, seen) {
+			var $msg = document.createElement('div'),
+				timestamp = new Date(msg.timestamp);
+
+			$msg.title = timestamp;
+			if(!seen) {
+				$msg.className = 'newMessage';
+			}
+
 			msg.msg = msg.msg.replace(urlMatch, '<a href="$1" target="_blank">$1</a>');
-			return '<span title="' + timestamp + '"><strong>' + msg.sender + ':</strong> ' + msg.msg + '</span>';
+
+			$msg.innerHTML = '<strong>' + msg.sender + ':</strong> ' + msg.msg;
+			$chat.appendChild($msg);
 		};
 	}());
 
@@ -84,8 +93,6 @@
 		});
 
 		socket.on('history', function(data) {
-			var html = '';
-
 			(function() {
 				var $el = document.querySelector('#msgs_from_' + data.to);
 
@@ -99,11 +106,11 @@
 
 			currentChat = data.to;
 
-			data.history.forEach(function(msg) {
-				html += renderMessage(msg) + '<br>';
+			$chat.innerHTML = '';
+			data.history.forEach(function(msg, i) {
+				renderMessage(msg, i < data.seen);
 			});
 
-			$chat.innerHTML = html;
 			$chatHeader.innerHTML = 'Chatting with ' + data.name;
 
 			$chat.scrollTop = $chat.scrollHeight;
@@ -124,11 +131,15 @@
 				return;
 			}
 
-			$chat.innerHTML += renderMessage(data.msg) + '<br>';
+			renderMessage(data.msg, data.seen);
 
 			$chat.scrollTop = $chat.scrollHeight;
 
-			socket.emit('see', currentChat);
+			if(!data.seen) {
+				setTimeout(function() {
+					socket.emit('see', currentChat);
+				}, 1000);
+			}
 		});
 	});
 }());
