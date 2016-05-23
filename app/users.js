@@ -101,6 +101,10 @@ function connect(socket) {
 			return;
 		}
 
+		if(!users.hasOwnProperty(to)) {
+			return;
+		}
+
 		socket.emit('history', {
 			to: to,
 			name: users[to].name,
