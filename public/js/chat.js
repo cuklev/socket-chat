@@ -2,7 +2,6 @@
 	var currentChat,
 		$online, $offline, $chat, $chatHeader, $chatMessage,
 		renderMessage,
-		unseen = [],
 		windowfocus = false;
 
 	renderMessage = (function() {
@@ -24,18 +23,6 @@
 			$chat.appendChild($msg);
 		};
 	}());
-
-	function displayNotifications(to) {
-		var $el = document.querySelector('#msgs_from_' + to);
-		if(unseen[to] === 0) {
-			$el.innerHTML = '';
-			$el.style.display = 'none';
-		}
-		else {
-			$el.innerHTML = unseen[to];
-			$el.style.display = 'inline';
-		}
-	}
 
 	function seeChat() {
 		var i, $msgs = document.querySelectorAll('.newMessage');
@@ -99,22 +86,13 @@
 			$online.innerHTML = onhtml;
 			$offline.innerHTML = offhtml;
 
-			for(var i in unseen) {
-				displayNotifications(i);
-			}
-		});
-
-		socket.on('missed', function(missed) {
-			for(var i in missed) {
-				unseen[i] = missed[i];
-			}
+			notifications.displayAll();
 		});
 
 		socket.on('history', function(data) {
 			currentChat = data.to;
 
-			unseen[data.to] = 0;
-			displayNotifications(data.to);
+			notifications.clear(data.to);
 
 			$chat.innerHTML = '';
 			data.history.forEach(function(msg, i) {
@@ -139,13 +117,7 @@
 			}
 
 			if(currentChat !== data.to) {
-				if(!unseen.hasOwnProperty(data.to)) {
-					unseen[data.to] = 0;
-				}
-				unseen[data.to] += 1;
-
-				displayNotifications(data.to);
-
+				notifications.increment(data.to);
 				return;
 			}
 
