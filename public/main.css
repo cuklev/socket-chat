@@ -1,23 +1,38 @@
+h1, #reName {
+	margin-left: 15%;
+}
+
+.column {
+	float: left;
+}
+#users-column {
+	width: 20%;
+}
+
+.online {
+	color: lime;
+}
+.offline {
+	color: red;
+}
+
+#chat-column {
+	width: 70%;
+}
+
+#chatHeader {
+	text-align: center;
+}
 #chat {
 	border: solid 1px;
 	width: 100%;
-	height: 80vh;
+	height: 70vh;
 	overflow: auto;
 	word-wrap: break-word;
 }
 #chatMessage {
 	width: 100%;
 	resize: none;
-}
-
-.column {
-	float: left;
-}
-#online-column {
-	width: 25%;
-}
-#chat-column {
-	width: 65%;
 }
 
 .notification {

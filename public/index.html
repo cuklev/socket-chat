@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<script src="socket.io/socket.io.js"></script>
 
@@ -15,13 +16,11 @@
 	</head>
 
 	<body>
-		<div id="online-column" class="column">
-			<h1>Hello, <span id="titleName"></span>!</h1>
-			Rename: <input id="reName">
-			<h3>Online users</h3>
-			<ul id="online"></ul>
-			<h3>Offline users</h3>
-			<ul id="offline"></ul>
+		<h1>Hello, <span id="titleName"></span>!</h1>
+			<input id="reName" placeholder="Rename"><br>
+		<div id="users-column" class="column">
+			<h3>Users</h3>
+			<ul id="usersList"></ul>
 		</div>
 		<div id="chat-column" class="column">
 			<h2 id="chatHeader">Select a user from the left column</h2>

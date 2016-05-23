@@ -1,6 +1,6 @@
 (function() {
 	var currentChat,
-		$online, $offline, $chat, $chatHeader, $chatMessage,
+		$users, $chat, $chatHeader, $chatMessage,
 		renderMessage,
 		windowfocus = false;
 
@@ -52,8 +52,7 @@
 	});
 
 	window.addEventListener('load', function() {
-		$online = document.querySelector('#online');
-		$offline = document.querySelector('#offline');
+		$users = document.querySelector('#usersList');
 		$chat = document.querySelector('#chat');
 		$chatHeader = document.querySelector('#chatHeader');
 		$chatMessage = document.querySelector('#chatMessage');
@@ -78,23 +77,20 @@
 		});
 
 		socket.on('users', function(users) {
-			var onhtml = '', offhtml = '';
+			var html = '';
 
 			users.forEach(function(x) {
-				var title = 'Logged in from: ' + x.ip + '\n' + x.userAgent,
+				var title = 'L' + (x.online ? '' : 'ast l') + 'ogged in from: ' + x.ip + '\n' + x.userAgent, // insert time if offline
 					notification = '<span id="msgs_from_' + x.index + '" class="notification"></span>',
-					html = '<li title="' + title + '"><a href="#' + x.index + '">' + x.name + '</a>' + notification + '</li>';
+					href = '<a href="#' + x.index + '">' + x.name + '</a>',
+					$li = '<li title="' + title + '" class="' + (x.online ? 'online' : 'offline') + '">' + href + notification + '</li>';
 
-				if(x.online) {
-					onhtml += html;
-				}
-				else {
-					offhtml += html;
-				}
+				html += $li;
 			});
 
-			$online.innerHTML = onhtml;
-			$offline.innerHTML = offhtml;
+			$users.innerHTML = html;
+			console.log($users);
+			console.log(html);
 
 			notifications.displayAll();
 		});
