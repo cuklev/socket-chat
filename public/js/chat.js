@@ -120,6 +120,8 @@
 		});
 
 		socket.on('msg', function(data) {
+			util.beep();
+
 			if(currentChat !== data.to) {
 				if(!unseen.hasOwnProperty(data.to)) {
 					unseen[data.to] = 0;
