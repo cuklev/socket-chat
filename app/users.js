@@ -40,6 +40,10 @@ function connect(socket) {
 	let index;
 
 	socket.on('id', (id) => {
+		if(index !== undefined) {
+			return;
+		}
+
 		if(!user_ids.hasOwnProperty(id)) {
 			index = users.length;
 			user_ids[id] = index;
