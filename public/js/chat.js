@@ -89,8 +89,6 @@
 			});
 
 			$users.innerHTML = html;
-			console.log($users);
-			console.log(html);
 
 			notifications.displayAll();
 		});
