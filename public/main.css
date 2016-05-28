@@ -9,11 +9,25 @@ h1, #reName {
 .column {
 	float: left;
 }
+#usersList li a {
+	text-decoration: none;
+	color: orange;
+}
 #users-column {
 	width: 20%;
 }
-#chat p {
-	border-bottom: 1px solid skyblue;
+#submit {
+	float:right;
+	margin-bottom: 10px;
+}
+#chat div {
+	margin-top: 3px;
+	border: 2px solid lightgrey;
+	border-top: none;
+	border-radius: 4px;
+}
+#chat div strong {
+	color: orange;
 }
 h1, h2, h3 {
 	color: skyblue;
