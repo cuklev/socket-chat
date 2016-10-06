@@ -77,7 +77,7 @@ function connect(socket) {
 	});
 
 	socket.on('name', (name) => {
-		if(index === undefined) {
+		if(index === undefined || name.length > 16) { // TODO Config option for maximal name lenght
 			return;
 		}
 
