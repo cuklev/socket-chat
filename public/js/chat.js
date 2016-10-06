@@ -5,8 +5,7 @@
 		windowfocus = false;
 
 	renderMessage = (function() {
-		// regex WILL need updating
-		var urlMatch = /((([A-Za-z]{2,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+		var urlMatch = /(((gopher|news|telnet|nntp|file|http|ftp|https|git|ws|wss)://)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/g;
 
 		return function(msg, seen, old) {
 			var $msg = document.createElement('div'),
