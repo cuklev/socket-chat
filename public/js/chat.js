@@ -5,7 +5,8 @@
 		windowfocus = false;
 
 	renderMessage = (function() {
-		var urlMatch = /(((gopher|news|telnet|nntp|file|http|ftp|https|git|ws|wss)://)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/g;
+		//var urlMatch = /(((gopher|news|telnet|nntp|file|http|ftp|https):\/\/)[-A-Za-z0-9]*\.)[-A-Za-z0-9\.]+(:[0-9]*)?(\/[-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]*)?/g;
+		var urlMatch = /(((gopher|news|telnet|ssh|nntp|file|http|ftp|https|ws|wss|git|svn):\/\/)[-A-Za-z0-9]+\.)[-A-Za-z0-9.]+(:[0-9]+)?/g;
 
 		return function(msg, seen, old) {
 			var $msg = document.createElement('div'),
